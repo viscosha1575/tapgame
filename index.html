@@ -5,35 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matching Game</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffcc00;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
- overflow: hidden; /* Запрещает прокрутку страницы */
-        }
-
-        .game-container {
-            text-align: center;
-            width: 100%;
-            max-width: 420px; /* Максимальная ширина для мобильных */
-            margin-top: 100px; /* Сдвиг вниз на 50 пикселей */
-        }
-
-        .timer {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .score {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
       body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -48,8 +19,48 @@
 
 .game-container {
     display: flex;
-    justify-content: center; /* Центрирование содержимого по горизонтали */
-    align-items: center; /* Центрирование содержимого по вертикали */
+    flex-direction: column; /* Изменяем направление на вертикальное */
+    align-items: center; /* Центрирование элементов по горизонтали */
+    justify-content: flex-start; /* Таймер сверху */
+    margin-top: 100px; /* Сдвиг вниз на 50 пикселей */
+}
+
+.timer-container {
+    position: relative;
+    margin-bottom: 20px; /* Отступ от сетки */
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-svg {
+    transform: rotate(-90deg); /* Поворот для корректного отсчета */
+    position: absolute;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2); /* Фоновая окружность */
+    stroke-width: 10;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: white; /* Цвет прогресса */
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 377; /* Длина окружности (2πr) */
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s linear;
+}
+
+.timer-text {
+    position: absolute;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
 }
 
 .grid {
@@ -58,6 +69,7 @@
     gap: 5px; /* Расстояние между элементами */
     width: auto; /* Ширина сетки зависит от контента */
     height: auto; /* Высота сетки зависит от контента */
+    margin-top: 20px; /* Отступ между таймером и сеткой */
 }
 
 .grid-item {
@@ -75,6 +87,44 @@
     height: auto; /* Сохраняет пропорции */
     object-fit: contain; /* Подгоняет изображение без обрезки */
 }
+.timer-container {
+    position: relative;
+    margin-bottom: 20px; /* Отступ от сетки */
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-svg {
+    position: absolute;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2); /* Фоновая окружность */
+    stroke-width: 10;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: white; /* Цвет прогресса */
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 377; /* Длина окружности (2πr) */
+    stroke-dashoffset: 377; /* Начинаем с полного круга */
+    transition: stroke-dashoffset 0.5s linear;
+}
+
+
+.timer-text {
+    position: absolute;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+}
+
 
 /* Адаптация для мобильных устройств */
 @media (max-width: 768px) {
@@ -100,6 +150,13 @@
 </head>
 <body>
     <div class="game-container">
+        <div class="timer-container">
+            <svg class="timer-svg" width="150" height="150">
+                <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
+                <circle class="circle-progress" cx="75" cy="75" r="60"></circle>
+            </svg>
+            <div class="timer-text" id="timer-text">60</div>
+        </div>
         <div class="grid" id="grid">
             <!-- Items will be generated dynamically -->
         </div>
@@ -109,10 +166,11 @@
         const grid = document.getElementById("grid");
         const timerDisplay = document.getElementById("timer");
         const scoreDisplay = document.getElementById("score");
-
-        let score = 0;
-        let timeLeft = 30;
-        let timerInterval;
+        const FULL_DASH_ARRAY = 377; // Полный путь окружности (2πr)
+        const TIME_LIMIT = 60; // Таймер на 1 минуту
+        let timeLeft = TIME_LIMIT;
+        const progressCircle = document.querySelector('.circle-progress');
+        const timerText = document.getElementById('timer-text');
 
         // List of images for the game
         const backImage = "./src/back.png"; // Path to back image
@@ -147,27 +205,32 @@
         }
 
         function startTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) {
-                    endGame();
-                }
-            }, 1000);
-        }
+    const timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
 
-        function updateTimer() {
-            timerDisplay.textContent = timeLeft;
-        }
-
-        function updateScore() {
-            scoreDisplay.textContent = score;
-        }
-
-        function endGame() {
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            alert(`Game Over! Your score is ${score}`);
+            endGame();
         }
+    }, 1000);
+}
+
+function updateTimer() {
+    // Обновляем текст таймера
+    timerText.textContent = timeLeft;
+
+    // Вычисляем смещение для движения по часовой стрелке
+    const offset = (FULL_DASH_ARRAY / TIME_LIMIT) * timeLeft;
+    progressCircle.style.strokeDashoffset = offset;
+}
+
+
+// Обновленная функция завершения игры
+function endGame() {
+    alert(`Game Over! Your score is ${score}`);
+}
+
 
         // Start the game
         startGame();
