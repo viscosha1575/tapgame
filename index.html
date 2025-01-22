@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffcc00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-container {
+            text-align: center;
+            width: 100%;
+            max-width: 420px; /* Максимальная ширина для мобильных */
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+            gap: 10px; /* Расстояние между ячейками */
+            width: 100%; /* Сетка растягивается на ширину контейнера */
+        }
+
+        .grid-item {
+            width: 100%; /* Адаптивная ширина */
+            aspect-ratio: 1; /* Делает ячейки квадратными */
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 0px;
+        }
+
+        .grid-item.selected {
+            border: 5px solid black;
+        }
+
+        /* Медиазапрос для небольших экранов */
+        @media (max-width: 768px) {
+            .timer {
+                font-size: 1.2rem;
+            }
+
+            .score {
+                font-size: 1rem;
+            }
+
+            .grid-item {
+                border-radius: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="timer">Time: <span id="timer">30</span></div>
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="grid" id="grid">
+            <!-- Items will be generated dynamically -->
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById("grid");
+        const timerDisplay = document.getElementById("timer");
+        const scoreDisplay = document.getElementById("score");
+
+        let score = 0;
+        let timeLeft = 30;
+        let timerInterval;
+
+        // List of images for the game
+        const backImage = "./src/back.png"; // Path to back image
+        const frontImage = "./src/front.png"; // Path to front image
+
+        function startGame() {
+            generateGrid();
+            startTimer();
+        }
+
+        function generateGrid() {
+            grid.innerHTML = ""; // Clear previous grid
+
+            for (let i = 0; i < 9; i++) {
+                const gridItem = document.createElement("div");
+                gridItem.classList.add("grid-item");
+
+                const img = document.createElement("img");
+                img.src = backImage; // Initially show back image
+                gridItem.appendChild(img);
+
+                gridItem.addEventListener("click", () => {
+                    img.src = frontImage; // Show front image
+
+                    setTimeout(() => {
+                        img.src = backImage; // Flip back to back image after 0.5s
+                    }, 500);
+                });
+
+                grid.appendChild(gridItem);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            timerDisplay.textContent = timeLeft;
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = score;
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            alert(`Game Over! Your score is ${score}`);
+        }
+
+        // Start the game
+        startGame();
+    </script>
+</body>
+</html>
