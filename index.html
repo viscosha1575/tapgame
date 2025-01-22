@@ -27,40 +27,41 @@
 
 .timer-container {
     position: relative;
-    margin-bottom: 20px; /* Отступ от сетки */
-    width: 150px;
-    height: 150px;
+    margin-bottom: 20px;
+    width: 75px; /* Уменьшенный размер */
+    height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .timer-svg {
-    transform: rotate(-90deg); /* Поворот для корректного отсчета */
     position: absolute;
+    width: 75px;
+    height: 75px;
 }
 
 .circle-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.2); /* Фоновая окружность */
-    stroke-width: 10;
+    stroke: rgba(0, 0, 0, 0.2); /* Фоновая окружность (светлый цвет) */
+    stroke-width: 5;
 }
 
 .circle-progress {
     fill: none;
-    stroke: white; /* Цвет прогресса */
-    stroke-width: 10;
+    stroke: black; /* Цвет прогресса */
+    stroke-width: 5;
     stroke-linecap: round;
-    stroke-dasharray: 377; /* Длина окружности (2πr) */
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.5s linear;
+    stroke-dasharray: 188.5; /* Длина окружности (2πr, где r=30) */
+    stroke-dashoffset: 0; /* Начинается с полного круга */
+    transition: stroke-dashoffset 1s linear;
 }
 
 .timer-text {
     position: absolute;
-    font-size: 2.5rem;
+    font-size: 1.25rem; /* Размер текста */
     font-weight: bold;
-    color: white;
+    color: black;
 }
 
 .grid {
@@ -89,9 +90,9 @@
 }
 .timer-container {
     position: relative;
-    margin-bottom: 20px; /* Отступ от сетки */
-    width: 75px; /* Ширина уменьшена в 2 раза */
-    height: 75px; /* Высота уменьшена в 2 раза */
+    margin-bottom: 20px;
+    width: 75px;
+    height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,31 +100,33 @@
 
 .timer-svg {
     position: absolute;
-    width: 75px; /* Размер SVG уменьшен */
+    width: 75px;
     height: 75px;
 }
-
-.circle-bg {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.2); /* Фоновая окружность */
-    stroke-width: 5; /* Ширина линии уменьшена в 2 раза */
-}
-
 .circle-progress {
     fill: none;
-    stroke: white; /* Цвет прогресса */
-    stroke-width: 5; /* Ширина линии уменьшена в 2 раза */
+    stroke: black; /* Полностью черный цвет по умолчанию */
+    stroke-width: 5;
     stroke-linecap: round;
-    stroke-dasharray: 188.5; /* Длина окружности для радиуса 30 */
-    stroke-dashoffset: 188.5; /* Начинаем с полного круга */
-    transition: stroke-dashoffset 0.5s linear;
+    stroke-dasharray: 188.5; /* Длина окружности (2πr, где r=30) */
+    stroke-dashoffset: 0; /* Таймер начинается с полной окружности */
+    transform-origin: center;
+    transform: rotate(-90deg); /* Поворачиваем окружность для движения по часовой стрелке */
+    transition: stroke 0.5s ease; /* Плавный переход цвета */
+  }
+.circle-bg {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.5); /* Фоновая окружность */
+    stroke-width: 5;
 }
+
+
 
 .timer-text {
     position: absolute;
-    font-size: 1.25rem; /* Размер текста уменьшен в 2 раза */
+    font-size: 1.25rem;
     font-weight: bold;
-    color: white;
+    color: black;
 }
 
 
@@ -177,10 +180,15 @@ let timeLeft = TIME_LIMIT;
         const backImage = "./src/back.png"; // Path to back image
         const frontImage = "./src/front.png"; // Path to front image
 
+/*************  ✨ Codeium Command 🌟  *************/
+        /**
+         * Starts the game by generating the grid and starting the timer.
+         */
         function startGame() {
             generateGrid();
             startTimer();
         }
+/******  67b71c9a-d9d4-43b6-bcc2-8b42bda3dd2e  *******/
 
         function generateGrid() {
             grid.innerHTML = ""; // Clear previous grid
@@ -217,15 +225,19 @@ let timeLeft = TIME_LIMIT;
     }, 1000);
 }
 
-
 function updateTimer() {
     // Обновляем текст таймера
     timerText.textContent = timeLeft;
 
-    // Вычисляем смещение для движения по часовой стрелке
-    const offset = (FULL_DASH_ARRAY / TIME_LIMIT) * timeLeft;
+    // Вычисляем смещение для уменьшения круга
+    const offset = -(FULL_DASH_ARRAY / TIME_LIMIT) * (TIME_LIMIT - timeLeft);
     progressCircle.style.strokeDashoffset = offset;
+
+    // Вычисляем прозрачность: 1 для полностью черного, 0.5 для полупрозрачного
+    const opacity = 0.5 + (timeLeft / TIME_LIMIT) * 0.5;
+    progressCircle.style.stroke = `rgba(0, 0, 0, ${opacity})`;
 }
+
 
 
 // Обновленная функция завершения игры
