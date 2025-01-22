@@ -33,13 +33,30 @@
             margin-bottom: 10px;
         }
 
-        .grid {
+      body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffcc00;
+    display: flex; /* Используем flexbox для центрирования */
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+    height: 100vh; /* Высота экрана */
+    overflow: hidden; /* Запрет прокрутки страницы */
+}
+
+.game-container {
+    display: flex;
+    justify-content: center; /* Центрирование содержимого по горизонтали */
+    align-items: center; /* Центрирование содержимого по вертикали */
+}
+
+.grid {
     display: grid;
     grid-template-columns: repeat(3, 100px); /* Три столбца */
-    gap: 0px; /* Уменьшение расстояния между элементами */
-    width: 100%; /* Сетка растягивается на ширину контейнера */
-    max-width: 350px; /* Максимальная ширина для мобильных */
-    margin: 0 auto; /* Центрирование сетки */
+    gap: 5px; /* Расстояние между элементами */
+    width: auto; /* Ширина сетки зависит от контента */
+    height: auto; /* Высота сетки зависит от контента */
 }
 
 .grid-item {
@@ -58,11 +75,7 @@
     object-fit: contain; /* Подгоняет изображение без обрезки */
 }
 
-        .grid-item.selected {
-            border: 5px solid black;
-        }
-
-       /* Адаптация для мобильных устройств */
+/* Адаптация для мобильных устройств */
 @media (max-width: 768px) {
     .grid {
         gap: 2px; /* Уменьшение расстояния еще больше */
