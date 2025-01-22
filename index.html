@@ -35,7 +35,7 @@
         .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Три столбца */
-    gap: 10px; /* Расстояние между элементами */
+    gap: 2px; /* Расстояние между элементами */
     width: 100%; /* Заполняет ширину контейнера */
     max-width: 420px; /* Максимальная ширина для телефонов */
     margin: 0 auto; /* Центрирование сетки */
@@ -43,7 +43,6 @@
 
 .grid-item {
     width: 100%; /* Автоматическое растяжение внутри колонки */
-    aspect-ratio: 9 / 16; /* Пропорции как у смартфона */
     background: transparent;
     display: flex;
     justify-content: center;
@@ -79,7 +78,7 @@
     }
 
     .grid-item img {
-        width: 80%; /* Подгоняем под маленькие экраны */
+        width: 70%; /* Подгоняем под маленькие экраны */
     }
 }
     </style>
