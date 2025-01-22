@@ -33,47 +33,55 @@
         }
 
         .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 колонки */
-            gap: 2px; /* Расстояние между ячейками */
-            width: 100%; /* Сетка растягивается на ширину контейнера */
-        }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Три столбца */
+    gap: 10px; /* Расстояние между элементами */
+    width: 100%; /* Заполняет ширину контейнера */
+    max-width: 420px; /* Максимальная ширина для телефонов */
+    margin: 0 auto; /* Центрирование сетки */
+}
 
-        .grid-item {
-            width: 100%; /* Адаптивная ширина */
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+.grid-item {
+    width: 100%; /* Автоматическое растяжение внутри колонки */
+    aspect-ratio: 9 / 16; /* Пропорции как у смартфона */
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
 
-        .grid-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 10px;
-        }
+.grid-item img {
+    width: 90%; /* Оставляет небольшой отступ внутри элемента */
+    height: auto; /* Сохраняет пропорции изображения */
+    object-fit: contain; /* Подгоняет изображение без обрезки */
+    border-radius: 10px; /* Добавляет скругленные углы */
+}
 
         .grid-item.selected {
             border: 5px solid black;
         }
 
-        /* Медиазапрос для небольших экранов */
         @media (max-width: 768px) {
-            .timer {
-                font-size: 1.2rem;
-            }
+    .grid {
+        gap: 8px; /* Уменьшаем зазоры для меньших экранов */
+    }
 
-            .score {
-                font-size: 1rem;
-            }
+    .grid-item img {
+        width: 85%; /* Небольшое уменьшение изображений */
+    }
+}
 
-            .grid-item {
-                border-radius: 3px;
-            }
-        }
+@media (max-width: 480px) {
+    .grid {
+        gap: 5px; /* Минимальное расстояние между элементами */
+    }
+
+    .grid-item img {
+        width: 80%; /* Подгоняем под маленькие экраны */
+    }
+}
     </style>
 </head>
 <body>
@@ -85,6 +93,8 @@
 
     <script>
         const grid = document.getElementById("grid");
+        const timerDisplay = document.getElementById("timer");
+        const scoreDisplay = document.getElementById("score");
 
         let score = 0;
         let timeLeft = 30;
