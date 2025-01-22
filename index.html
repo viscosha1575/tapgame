@@ -22,7 +22,7 @@
     flex-direction: column; /* Изменяем направление на вертикальное */
     align-items: center; /* Центрирование элементов по горизонтали */
     justify-content: flex-start; /* Таймер сверху */
-    margin-top: 100px; /* Сдвиг вниз на 50 пикселей */
+    
 }
 
 .timer-container {
@@ -90,8 +90,8 @@
 .timer-container {
     position: relative;
     margin-bottom: 20px; /* Отступ от сетки */
-    width: 150px;
-    height: 150px;
+    width: 75px; /* Ширина уменьшена в 2 раза */
+    height: 75px; /* Высота уменьшена в 2 раза */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,28 +99,29 @@
 
 .timer-svg {
     position: absolute;
+    width: 75px; /* Размер SVG уменьшен */
+    height: 75px;
 }
 
 .circle-bg {
     fill: none;
     stroke: rgba(255, 255, 255, 0.2); /* Фоновая окружность */
-    stroke-width: 10;
+    stroke-width: 5; /* Ширина линии уменьшена в 2 раза */
 }
 
 .circle-progress {
     fill: none;
     stroke: white; /* Цвет прогресса */
-    stroke-width: 10;
+    stroke-width: 5; /* Ширина линии уменьшена в 2 раза */
     stroke-linecap: round;
-    stroke-dasharray: 377; /* Длина окружности (2πr) */
-    stroke-dashoffset: 377; /* Начинаем с полного круга */
+    stroke-dasharray: 188.5; /* Длина окружности для радиуса 30 */
+    stroke-dashoffset: 188.5; /* Начинаем с полного круга */
     transition: stroke-dashoffset 0.5s linear;
 }
 
-
 .timer-text {
     position: absolute;
-    font-size: 2.5rem;
+    font-size: 1.25rem; /* Размер текста уменьшен в 2 раза */
     font-weight: bold;
     color: white;
 }
@@ -151,9 +152,9 @@
 <body>
     <div class="game-container">
         <div class="timer-container">
-            <svg class="timer-svg" width="150" height="150">
-                <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
-                <circle class="circle-progress" cx="75" cy="75" r="60"></circle>
+            <svg class="timer-svg" width="75" height="75"> <!-- Уменьшение размеров SVG -->
+                <circle class="circle-bg" cx="37.5" cy="37.5" r="30"></circle> <!-- Радиус уменьшен до 30 -->
+                <circle class="circle-progress" cx="37.5" cy="37.5" r="30"></circle>
             </svg>
             <div class="timer-text" id="timer-text">60</div>
         </div>
@@ -166,9 +167,9 @@
         const grid = document.getElementById("grid");
         const timerDisplay = document.getElementById("timer");
         const scoreDisplay = document.getElementById("score");
-        const FULL_DASH_ARRAY = 377; // Полный путь окружности (2πr)
-        const TIME_LIMIT = 60; // Таймер на 1 минуту
-        let timeLeft = TIME_LIMIT;
+        const FULL_DASH_ARRAY = 188.5; // Длина окружности для радиуса 30 (2π * 30)
+const TIME_LIMIT = 60; // Таймер на 1 минуту
+let timeLeft = TIME_LIMIT;
         const progressCircle = document.querySelector('.circle-progress');
         const timerText = document.getElementById('timer-text');
 
@@ -215,6 +216,7 @@
         }
     }, 1000);
 }
+
 
 function updateTimer() {
     // Обновляем текст таймера
